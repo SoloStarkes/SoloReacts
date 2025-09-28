@@ -1,75 +1,105 @@
+/* ---------- Global reset inside slider ---------- */
 .slider * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+/* ---------- Responsive variables ---------- */
 .slider {
+  /* Card size + spacing scale with screen size */
+  --card-w: clamp(180px, 20vw, 280px);
+  --card-h: clamp(260px, 32vw, 420px);
+  --gap: clamp(12px, 2vw, 24px);
+
   position: absolute;
-  top: 0;
-  left: 0;
+  inset: 0;              /* full viewport */
   width: 100vw;
   height: 100vh;
-  margin: 0 auto;
   background: #f5f5f5;
   box-shadow: 0 30px 50px #dbdbdb;
   overflow: hidden;
 }
 
-.slider .slide .item {
-  width: 200px;
-  height: 300px;
-  position: absolute;
-  top: 50%;
-  transform: translate(0, -50%);
-  border-radius: 20px;
-  box-shadow: 0 30px 50px #505050;
-  background-position: 50% 50%;
-  background-size: cover;
-  display: inline-block;
-  transition: 0.5s;
-}
-
-.slider .slide .item:nth-child(1),
-.slider .slide .item:nth-child(2) {
-  top: 0;
-  left: 0;
-  transform: translate(0, 0);
-  border-radius: 0;
+/* Make the slide area a positioned context */
+.slider .slide {
+  position: relative;
   width: 100%;
   height: 100%;
 }
 
-.slider .slide .item:nth-child(3) { left: 50%; }
-.slider .slide .item:nth-child(4) { left: calc(50% + 220px); }
-.slider .slide .item:nth-child(5) { left: calc(50% + 440px); }
+/* ---------- Items ---------- */
+/* Default: cards positioned from true center using an offset variable */
+.slider .slide .item {
+  position: absolute;
+  top: 50%;
+  left: calc(50% + var(--offset, 0px)); /* offset from viewport center */
+  transform: translate(-50%, -50%);
+  width: var(--card-w);
+  height: var(--card-h);
+  border-radius: 20px;
+  background-position: 50% 50%;
+  background-size: cover;
+  display: inline-block;
+  box-shadow: 0 30px 50px #505050;
+  transition: 0.5s;
+  z-index: 1;
+}
 
-.slider .slide .item:nth-child(n + 6) {
-  left: calc(50% + 660px);
+/* Item 1 = full-screen background of the current slide */
+.slider .slide .item:nth-child(1) {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  transform: none;
+  border-radius: 0;
+  box-shadow: none;
+  z-index: 0;
+}
+
+/* Visible cards: main (center) + two previews to the right */
+.slider .slide .item:nth-child(2) { --offset: 0px; }
+.slider .slide .item:nth-child(3) { --offset: calc(var(--card-w) + var(--gap)); }
+.slider .slide .item:nth-child(4) { --offset: calc(2 * (var(--card-w) + var(--gap))); }
+
+/* Hide anything beyond the 4th (safety) */
+.slider .slide .item:nth-child(n + 5) {
+  --offset: calc(3 * (var(--card-w) + var(--gap)));
   opacity: 0;
 }
 
+/* ---------- Text content (shown on the full-screen background) ---------- */
 .slider .item .content {
   position: absolute;
   top: 50%;
-  left: 100px;
-  width: 300px;
+  left: clamp(24px, 8vw, 120px);
+  width: clamp(260px, 28vw, 420px);
+  transform: translateY(-50%);
   text-align: left;
-  color: #eee;
-  transform: translate(0, -50%);
+  color: #fff;
   font-family: system-ui;
   display: none;
-  z-index: 2; /* make sure content is above the button overlay */
+  z-index: 2;
+
+  /* New background box */
+  background: rgba(0, 0, 0, 0.55);  /* black w/ 55% opacity */
+  padding: 16px;
+  border-radius: 12px;              /* soften corners */
+  backdrop-filter: blur(4px);       /* optional glass effect */
 }
 
-.slider .slide .item:nth-child(2) .content {
+
+/* Show content only on the full-screen background (item 1) */
+.slider .slide .item:nth-child(1) .content {
   display: block;
 }
 
 .slider .content .name {
-  font-size: 40px;
+  font-size: clamp(28px, 4vw, 48px);
   text-transform: uppercase;
-  font-weight: bold;
+  font-weight: 700;
   opacity: 0;
   animation: slider-animate 1s ease-in-out 1 forwards;
 }
@@ -81,7 +111,100 @@
   animation: slider-animate 1s ease-in-out 0.3s 1 forwards;
 }
 
-/* ---- Animations ---- */
+/* ---- See More link (styled like button) ---- */
+.slider .content .see-more {
+  display: inline-block;
+  padding: 12px 24px;
+  background: #444;
+  border: 3px solid #eee;
+  border-radius: 30px;
+  color: #eee;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  opacity: 0.95;
+  text-decoration: none;
+  animation: slider-fade-in 0.7s ease-out 0.4s both;
+  transform-origin: center;
+}
+.slider .content .see-more:hover {
+  transform: translateY(-0.5%) scale(1.02);
+  background: #666;
+  border-color: #fff;
+  color: #fff;
+  opacity: 1;
+}
+.slider .content .see-more:active {
+  transform: translateY(1%) scale(0.98);
+}
+
+/* ---------- Bottom UI dock: centered under the card track ---------- */
+.slider .ui-dock {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: clamp(16px, 8vh, 80px);
+  display: flex;
+  align-items: center;
+  gap: clamp(14px, 2vw, 28px);
+  z-index: 3;
+}
+
+/* Nav buttons (reuse your look) */
+.slider .ui-dock .nav {
+  width: 60px;
+  height: 60px;
+  background: transparent;
+  border: 3px solid #eee;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.9;
+  transition: all 0.3s ease;
+}
+.slider .ui-dock .nav::before {
+  content: "";
+  width: 15px;
+  height: 15px;
+  border-top: 3px solid #eee;
+  border-right: 3px solid #eee;
+}
+.slider .ui-dock .prev::before { transform: rotate(-135deg); }
+.slider .ui-dock .next::before { transform: rotate(45deg); }
+.slider .ui-dock .nav:hover {
+  border-color: #fff;
+  opacity: 1;
+  background: #444;
+}
+
+/* Select Gift matches other CTAs */
+.slider .ui-dock .select-gift {
+  padding: 12px 24px;
+  background: #444;
+  border: 3px solid #eee;
+  border-radius: 30px;
+  color: #eee;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  opacity: 0.95;
+  animation: slider-fade-in 0.7s ease-out 0.4s both;
+  transform-origin: center;
+}
+.slider .ui-dock .select-gift:hover {
+  transform: translateY(-0.5%) scale(1.02);
+  background: #666;
+  border-color: #fff;
+  color: #fff;
+  opacity: 1;
+}
+.slider .ui-dock .select-gift:active {
+  transform: translateY(1%) scale(0.98);
+}
+
+/* ---------- Animations ---------- */
 @keyframes slider-animate {
   from {
     opacity: 0;
@@ -98,119 +221,4 @@
 @keyframes slider-fade-in {
   from { opacity: 0; filter: blur(33px); }
   to   { opacity: 0.95; filter: blur(0); }
-}
-
-/* ---- Slider nav arrows ---- */
-.slider .button {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  z-index: 1;           /* below content */
-  pointer-events: none; /* let clicks go through except on buttons themselves */
-}
-
-.slider .button > button {
-  pointer-events: auto; /* arrows remain clickable */
-  width: 60px;
-  height: 60px;
-  background: transparent;
-  border: 3px solid #eee;
-  border-radius: 50%;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0.9;
-  transition: all 0.3s ease;
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  transform-origin: center;
-  outline-offset: 2px;
-}
-
-.slider .button .prev { left: 53.5%; top: 67.67%; }
-.slider .button .next { right: 20.5%; top: 67.67%; }
-
-.slider .button .prev::before,
-.slider .button .next::before {
-  content: "";
-  display: inline-block;
-  width: 15px;
-  height: 15px;
-  border-top: 3px solid #eee;
-  border-right: 3px solid #eee;
-}
-
-.slider .button .prev::before { transform: rotate(-135deg); }
-.slider .button .next::before { transform: rotate(45deg); }
-
-.slider .button button:hover {
-  border-color: #fff;
-  opacity: 1;
-  background: #444;
-}
-
-/* ---- Gift button ---- */
-.slider .gift-button {
-  position: absolute;
-  top: 65.25%;
-  left: 66.7%;
-  transform: translateX(-50%);
-  text-align: center;
-}
-
-.slider .gift-button .select-gift {
-  padding: 12px 24px;
-  background: #444;
-  border: 3px solid #eee;
-  border-radius: 30px;
-  color: #eee;
-  font-size: 16px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  opacity: 0.95;
-  animation: slider-fade-in 0.7s ease-out 0.4s both;
-  transform-origin: center;
-}
-
-.slider .gift-button .select-gift:hover {
-  transform: translateY(-0.5%) scale(1.02);
-  background: #666;
-  border-color: #fff;
-  color: #fff;
-  opacity: 1;
-}
-
-.slider .gift-button .select-gift:active {
-  transform: translateY(1%) scale(0.98);
-}
-
-/* ---- See More link (now works like a button) ---- */
-.slider .content .see-more {
-  display: inline-block;
-  padding: 12px 24px;
-  background: #444;
-  border: 3px solid #eee;
-  border-radius: 30px;
-  color: #eee;
-  font-size: 16px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  opacity: 0.95;
-  text-decoration: none;
-  animation: slider-fade-in 0.7s ease-out 0.4s both;
-  transform-origin: center;
-}
-
-.slider .content .see-more:hover {
-  transform: translateY(-0.5%) scale(1.02);
-  background: #666;
-  border-color: #fff;
-  color: #fff;
-  opacity: 1;
-}
-
-.slider .content .see-more:active {
-  transform: translateY(1%) scale(0.98);
 }

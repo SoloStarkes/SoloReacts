@@ -1,91 +1,64 @@
-import { useEffect, useRef } from "react";
+import { useRef, useCallback } from "react";
 import "./Slider.css";
 
-// Data for each slide: name, background image, and external link
+// Data for each slide: name, background image, link, and description
 const slides = [
-  {
-    name: "Switzerland",
-    img: "https://i.ibb.co/qCkd9jS/img1.jpg",
+  { 
+    name: "Cafe Intermezzo (European Breakfast)", 
+    img: "https://www.ajc.com/resizer/bghEsOMtoKm5UtVnPBjnkz2-FyY=/arc-anglerfish-arc2-prod-ajc/public/7PTEQPNCKXQ2MW4LR3MUKBXEMM.jpg", 
     link: "https://www.cafeintermezzo.com/",
+    description: "Café Intermezzo brings the charm of a classic European coffeehouse to the U.S., offering guests a relaxing escape from the rush of daily life. With a menu featuring specialty coffees, exquisite pastries, and full meals from breakfast through late-night appetizers, this could be the spot you hit up after a rough and long all nighter!(Please don't pull all nighters 💀)" 
   },
-  {
-    name: "Finland",
-    img: "https://i.ibb.co/jrRb11q/img2.jpg",
-    link: "https://www.visitfinland.com/",
+  { 
+    name: "Sun in my Belly (Brunch)",      
+    img: "https://creativeloafing.com/dl31234?display&x=800&y=598", 
+    link: "https://www.suninmybelly.com/",
+    description: "Sun in My Belly is a vibrant brunch spot known for its creative, seasonal menu that blends Southern comfort with Mediterranean influences. From hearty classics like shrimp and grits to lighter options such as fresh salads, yogurt parfaits, and avocado toast, it offers something for all the girlfriends during Saturday brunch!" 
   },
-  {
-    name: "Iceland",
-    img: "https://i.ibb.co/NSwVv8D/img3.jpg",
-    link: "https://visiticeland.com/",
+  { 
+    name: "Kafenio Avondale (Greek Lunch)",      
+    img: "https://static.wixstatic.com/media/5ee7bd_75e81bc904fe415387e03f97a13f4b12~mv2.jpg/v1/fill/w_640,h_400,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/5ee7bd_75e81bc904fe415387e03f97a13f4b12~mv2.jpg", 
+    link: "https://www.kafeniogreekdiner.com/",
+    description: "Kafenio Avondale is a laid-back café serving Greek-inspired fare alongside classic American all-day breakfast favorites. You could enjoy everything from fresh gyros and hearty salads to wraps, coffee, and pastries, with beer and wine available to round out the menu. Its casual atmosphere makes it a great spot for both a quick bite and a relaxed meal, which let's be honest we could always go for!" 
   },
-  {
-    name: "Australia",
-    img: "https://i.ibb.co/Bq4Q0M8/img4.jpg",
-    link: "https://www.australia.com/",
-  },
-  {
-    name: "Netherland",
-    img: "https://i.ibb.co/jTQfmTq/img5.jpg",
-    link: "https://www.holland.com/",
-  },
-  {
-    name: "Ireland",
-    img: "https://i.ibb.co/RNkk6L0/img6.jpg",
-    link: "https://www.ireland.com/",
+  { 
+    name: "Paolino Italian Restaurant & Gelateria (Italian Dinner)",    
+    img: "https://s3-media0.fl.yelpcdn.com/bphoto/uziiw11p4OWtKf15K-vqVg/l.jpg", 
+    link: "https://www.paolinoitaliano.com/",
+    description: "Paolino Italian Restaurant & Gelateria is a cozy spot offering authentic Italian cuisine made with fresh ingredients, with a specialty in their different types of pastas. Since I know you don't like pizza, I managed to find probably the only Italian place in the world that doesn't have that on their menu!" 
   },
 ];
 
+
 export default function Slider() {
   const rootRef = useRef(null);
+  const slideRef = useRef(null);
 
-  useEffect(() => {
+  const handleNext = useCallback(() => {
     const root = rootRef.current;
-    if (!root) return;
+    const slide = slideRef.current;
+    if (!root || !slide) return;
+    const items = root.querySelectorAll(".item");
+    if (items.length > 0) slide.appendChild(items[0]);
+  }, []);
 
-    const next = root.querySelector(".next");
-    const prev = root.querySelector(".prev");
-    const slide = root.querySelector(".slide");
-
-    const handleNext = () => {
-      const items = root.querySelectorAll(".item");
-      if (items.length > 0) slide.appendChild(items[0]);
-    };
-
-    const handlePrev = () => {
-      const items = root.querySelectorAll(".item");
-      if (items.length > 0) slide.prepend(items[items.length - 1]);
-    };
-
-    next.addEventListener("click", handleNext);
-    prev.addEventListener("click", handlePrev);
-
-    return () => {
-      next.removeEventListener("click", handleNext);
-      prev.removeEventListener("click", handlePrev);
-    };
+  const handlePrev = useCallback(() => {
+    const root = rootRef.current;
+    const slide = slideRef.current;
+    if (!root || !slide) return;
+    const items = root.querySelectorAll(".item");
+    if (items.length > 0) slide.prepend(items[items.length - 1]);
   }, []);
 
   return (
     <div ref={rootRef} className="slider container">
-      <div className="slide">
+      <div className="slide" ref={slideRef}>
         {slides.map((s, i) => (
-          <div
-            key={i}
-            className="item"
-            style={{ backgroundImage: `url(${s.img})` }}
-          >
+          <div key={i} className="item" style={{ backgroundImage: `url(${s.img})` }}>
             <div className="content">
               <div className="name">{s.name}</div>
-              <div className="des">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Ab, eum!
-              </div>
-              {/* External link to open in a new tab */}
-              <a
-                className="see-more"
-                href={s.link}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              <div className="des">{s.description}</div>
+              <a className="see-more" href={s.link} target="_blank" rel="noopener noreferrer">
                 See More
               </a>
             </div>
@@ -93,15 +66,11 @@ export default function Slider() {
         ))}
       </div>
 
-      {/* Navigation arrows */}
-      <div className="button">
-        <button className="prev" aria-label="Previous"></button>
-        <button className="next" aria-label="Next"></button>
-      </div>
-
-      {/* Gift button */}
-      <div className="gift-button">
-        <button className="select-gift">Select Gift</button>
+      {/* Order: prev • select-gift • next */}
+      <div className="ui-dock">
+        <button className="nav prev" aria-label="Previous" onClick={handlePrev}></button>
+        <button className="select-gift">Select this one!</button>
+        <button className="nav next" aria-label="Next" onClick={handleNext}></button>
       </div>
     </div>
   );

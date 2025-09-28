@@ -9,7 +9,6 @@
   top: 0;
   left: 0;
   width: 100vw;
-  /*max-width: 95vw;*/
   height: 100vh;
   margin: 0 auto;
   background: #f5f5f5;
@@ -60,6 +59,7 @@
   transform: translate(0, -50%);
   font-family: system-ui;
   display: none;
+  z-index: 2; /* make sure content is above the button overlay */
 }
 
 .slider .slide .item:nth-child(2) .content {
@@ -81,14 +81,7 @@
   animation: slider-animate 1s ease-in-out 0.3s 1 forwards;
 }
 
-.slider .content button {
-  padding: 10px 20px;
-  border: none;
-  cursor: pointer;
-  opacity: 0;
-  animation: slider-animate 1s ease-in-out 0.6s 1 forwards;
-}
-
+/* ---- Animations ---- */
 @keyframes slider-animate {
   from {
     opacity: 0;
@@ -102,15 +95,22 @@
   }
 }
 
-/* Remove old .slider .button positioning */
+@keyframes slider-fade-in {
+  from { opacity: 0; filter: blur(33px); }
+  to   { opacity: 0.95; filter: blur(0); }
+}
+
+/* ---- Slider nav arrows ---- */
 .slider .button {
   position: absolute;
   width: 100%;
   height: 100%;
+  z-index: 1;           /* below content */
+  pointer-events: none; /* let clicks go through except on buttons themselves */
 }
 
-/* Style shared button base */
-.slider .button button {
+.slider .button > button {
+  pointer-events: auto; /* arrows remain clickable */
   width: 60px;
   height: 60px;
   background: transparent;
@@ -122,24 +122,16 @@
   justify-content: center;
   opacity: 0.9;
   transition: all 0.3s ease;
-  position: absolute; /* each button positioned on its own */
-  top: 50%;           /* vertically centered */
+  position: absolute;
+  top: 50%;
   transform: translateY(-50%);
+  transform-origin: center;
+  outline-offset: 2px;
 }
 
-/* Left button (prev) */
-.slider .button .prev {
-  left: 53.5%;  /* distance from left edge */
-  top: 67.67%;
-}
+.slider .button .prev { left: 53.5%; top: 67.67%; }
+.slider .button .next { right: 20.5%; top: 67.67%; }
 
-/* Right button (next) */
-.slider .button .next {
-  right: 20.5%; /* distance from right edge */
-  top: 67.67%;
-}
-
-/* Arrow symbols */
 .slider .button .prev::before,
 .slider .button .next::before {
   content: "";
@@ -150,56 +142,75 @@
   border-right: 3px solid #eee;
 }
 
-.slider .button .prev::before {
-  transform: rotate(-135deg);
-}
+.slider .button .prev::before { transform: rotate(-135deg); }
+.slider .button .next::before { transform: rotate(45deg); }
 
-.slider .button .next::before {
-  transform: rotate(45deg);
-}
-
-
-/* Hover effect: brighter outline */
 .slider .button button:hover {
   border-color: #fff;
   opacity: 1;
-}
-
-.slider .button button:hover::before {
-  border-color: #fff;
-}
-
-/* Hover effect */
-.slider .button button:hover {
   background: #444;
 }
-/* Wrapper div for positioning */
+
+/* ---- Gift button ---- */
 .slider .gift-button {
   position: absolute;
-  top: 65.25%;   /* distance from bottom */
-  left: 66.7%;    /* centered horizontally */
+  top: 65.25%;
+  left: 66.7%;
   transform: translateX(-50%);
   text-align: center;
 }
 
-/* Button styling */
 .slider .gift-button .select-gift {
   padding: 12px 24px;
   background: #444;
   border: 3px solid #eee;
   border-radius: 30px;
   color: #eee;
-  font-size: 18px;
+  font-size: 16px;
   cursor: pointer;
   transition: all 0.3s ease;
   opacity: 0.95;
+  animation: slider-fade-in 0.7s ease-out 0.4s both;
+  transform-origin: center;
 }
 
 .slider .gift-button .select-gift:hover {
-  transform: translateY(-2%) scale(1.02);
+  transform: translateY(-0.5%) scale(1.02);
   background: #666;
   border-color: #fff;
   color: #fff;
   opacity: 1;
 }
-.slider:active { transform: translateY(1%) scale(0.99); }
+
+.slider .gift-button .select-gift:active {
+  transform: translateY(1%) scale(0.98);
+}
+
+/* ---- See More link (now works like a button) ---- */
+.slider .content .see-more {
+  display: inline-block;
+  padding: 12px 24px;
+  background: #444;
+  border: 3px solid #eee;
+  border-radius: 30px;
+  color: #eee;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  opacity: 0.95;
+  text-decoration: none;
+  animation: slider-fade-in 0.7s ease-out 0.4s both;
+  transform-origin: center;
+}
+
+.slider .content .see-more:hover {
+  transform: translateY(-0.5%) scale(1.02);
+  background: #666;
+  border-color: #fff;
+  color: #fff;
+  opacity: 1;
+}
+
+.slider .content .see-more:active {
+  transform: translateY(1%) scale(0.98);
+}

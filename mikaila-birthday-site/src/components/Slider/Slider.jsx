@@ -1,5 +1,39 @@
 import { useEffect, useRef } from "react";
-import "./Slider.css";   // import the CSS
+import "./Slider.css";
+
+// Data for each slide: name, background image, and external link
+const slides = [
+  {
+    name: "Switzerland",
+    img: "https://i.ibb.co/qCkd9jS/img1.jpg",
+    link: "https://www.cafeintermezzo.com/",
+  },
+  {
+    name: "Finland",
+    img: "https://i.ibb.co/jrRb11q/img2.jpg",
+    link: "https://www.visitfinland.com/",
+  },
+  {
+    name: "Iceland",
+    img: "https://i.ibb.co/NSwVv8D/img3.jpg",
+    link: "https://visiticeland.com/",
+  },
+  {
+    name: "Australia",
+    img: "https://i.ibb.co/Bq4Q0M8/img4.jpg",
+    link: "https://www.australia.com/",
+  },
+  {
+    name: "Netherland",
+    img: "https://i.ibb.co/jTQfmTq/img5.jpg",
+    link: "https://www.holland.com/",
+  },
+  {
+    name: "Ireland",
+    img: "https://i.ibb.co/RNkk6L0/img6.jpg",
+    link: "https://www.ireland.com/",
+  },
+];
 
 export default function Slider() {
   const rootRef = useRef(null);
@@ -34,60 +68,38 @@ export default function Slider() {
   return (
     <div ref={rootRef} className="slider container">
       <div className="slide">
-        <div className="item" style={{ backgroundImage: "url(https://i.ibb.co/qCkd9jS/img1.jpg)" }}>
-          <div className="content">
-            <div className="name">Switzerland</div>
-            <div className="des">Lorem ipsum dolor sit amet consectetur adipisicing elit. Ab, eum!</div>
-            <button>See More</button>
+        {slides.map((s, i) => (
+          <div
+            key={i}
+            className="item"
+            style={{ backgroundImage: `url(${s.img})` }}
+          >
+            <div className="content">
+              <div className="name">{s.name}</div>
+              <div className="des">
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Ab, eum!
+              </div>
+              {/* External link to open in a new tab */}
+              <a
+                className="see-more"
+                href={s.link}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                See More
+              </a>
+            </div>
           </div>
-        </div>
-
-        <div className="item" style={{ backgroundImage: "url(https://i.ibb.co/jrRb11q/img2.jpg)" }}>
-          <div className="content">
-            <div className="name">Finland</div>
-            <div className="des">Lorem ipsum dolor sit amet consectetur adipisicing elit. Ab, eum!</div>
-            <button>See More</button>
-          </div>
-        </div>
-
-        <div className="item" style={{ backgroundImage: "url(https://i.ibb.co/NSwVv8D/img3.jpg)" }}>
-          <div className="content">
-            <div className="name">Iceland</div>
-            <div className="des">Lorem ipsum dolor sit amet consectetur adipisicing elit. Ab, eum!</div>
-            <button>See More</button>
-          </div>
-        </div>
-
-        <div className="item" style={{ backgroundImage: "url(https://i.ibb.co/Bq4Q0M8/img4.jpg)" }}>
-          <div className="content">
-            <div className="name">Australia</div>
-            <div className="des">Lorem ipsum dolor sit amet consectetur adipisicing elit. Ab, eum!</div>
-            <button>See More</button>
-          </div>
-        </div>
-
-        <div className="item" style={{ backgroundImage: "url(https://i.ibb.co/jTQfmTq/img5.jpg)" }}>
-          <div className="content">
-            <div className="name">Netherland</div>
-            <div className="des">Lorem ipsum dolor sit amet consectetur adipisicing elit. Ab, eum!</div>
-            <button>See More</button>
-          </div>
-        </div>
-
-        <div className="item" style={{ backgroundImage: "url(https://i.ibb.co/RNkk6L0/img6.jpg)" }}>
-          <div className="content">
-            <div className="name">Ireland</div>
-            <div className="des">Lorem ipsum dolor sit amet consectetur adipisicing elit. Ab, eum!</div>
-            <button>See More</button>
-          </div>
-        </div>
+        ))}
       </div>
 
+      {/* Navigation arrows */}
       <div className="button">
         <button className="prev" aria-label="Previous"></button>
         <button className="next" aria-label="Next"></button>
       </div>
-      {/* New Select Gift button */}
+
+      {/* Gift button */}
       <div className="gift-button">
         <button className="select-gift">Select Gift</button>
       </div>

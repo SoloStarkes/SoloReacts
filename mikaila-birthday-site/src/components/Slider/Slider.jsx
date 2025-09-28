@@ -84,12 +84,12 @@ export default function Slider() {
       </div>
 
       <div className="button">
-        <button className="prev" aria-label="Previous">
-          <i className="fa-solid fa-arrow-left"></i>
-        </button>
-        <button className="next" aria-label="Next">
-          <i className="fa-solid fa-arrow-right"></i>
-        </button>
+        <button className="prev" aria-label="Previous"></button>
+        <button className="next" aria-label="Next"></button>
+      </div>
+      {/* New Select Gift button */}
+      <div className="gift-button">
+        <button className="select-gift">Select Gift</button>
       </div>
     </div>
   );

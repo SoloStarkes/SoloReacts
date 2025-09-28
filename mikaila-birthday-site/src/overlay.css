@@ -1,0 +1,65 @@
+/* Base screen containers */
+.screen {
+  width: 100%;
+  min-height: 100dvh;
+}
+
+/* Full-screen slider replaces everything (no overlay) */
+.slider-screen {
+  position: fixed;
+  inset: 0;                 /* fill viewport */
+  z-index: 0;               /* below the docked button */
+  display: grid;
+  place-items: center;
+  background: #fff;         /* or match your app background */
+}
+
+/* Make your existing .slider expand on the slider screen */
+.slider-screen .slider {
+  width: 100vw !important;
+  max-width: 100vw !important;
+  height: 100dvh !important;
+  margin: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Keep the birthday screen in normal flow */
+.birthday-screen {
+  position: relative;
+}
+
+/* Docked CTA */
+.dock {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 24px;
+  z-index: 10; /* above slider screen */
+}
+
+.cta {
+  padding: 14px 22px;
+  font-size: 16px;
+  border-radius: 999px;
+  border: 3px solid;
+  border-radius: 30px;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+  transition: transform 120ms ease, box-shadow 120ms ease;
+  background: linear-gradient(135deg, #2e7d32 0%, #43a047 40%, #66bb6a 100%);
+  color: #fff;
+  border-color: #fff;
+}
+
+.cta:hover {
+  transform: translateY(-2%) scale(1.02);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  background: linear-gradient(135deg, #388e3c 0%, #4caf50 40%, #81c784 100%);
+}
+
+.cta:active { transform: translateY(1%) scale(0.99); }
+
+@supports (padding: max(0px)) {
+  .dock { bottom: max(24px, env(safe-area-inset-bottom)); }
+}

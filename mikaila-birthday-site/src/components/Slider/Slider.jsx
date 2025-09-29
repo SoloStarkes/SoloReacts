@@ -1,6 +1,6 @@
 import { useRef, useCallback, useState, useEffect } from "react";
 import "./Slider.css";
-import "./confirm.css"; // NEW: modal styles (different from your overlay.css)
+import "./confirm.css"; // Modal styles (separate from overlay.css)
 
 // Data for each slide: name, background image, link, and description
 const slides = [
@@ -39,7 +39,7 @@ export default function Slider() {
   const slideRef = useRef(null);
 
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
-  const [pendingIndex, setPendingIndex] = useState(null); // which slide we're confirming
+  const [pendingIndex, setPendingIndex] = useState(null); // which slide is being confirmed
 
   const handleNext = useCallback(() => {
     const root = rootRef.current;
@@ -72,15 +72,25 @@ export default function Slider() {
     setPendingIndex(null);
   }, []);
 
-  const handleConfirm = useCallback(() => {
-    // TODO: put your real action here (e.g., send SMS, mark selection, route, etc.)
-    // For now we just log and close.
+  const handleConfirm = useCallback(async () => {
     if (pendingIndex != null) {
-      console.log("Confirmed selection:", slides[pendingIndex]);
+      const restaurant = slides[pendingIndex];
+
+      try {
+        await fetch("/api/send-sms", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            restaurantName: restaurant.name,
+          }),
+        });
+        alert(`Gift card for ${restaurant.name} confirmed and texts sent! 🎉`);
+      } catch (err) {
+        console.error("Failed to send SMS", err);
+        alert("Something went wrong sending the text.");
+      }
     }
     setIsConfirmOpen(false);
-    // keep pendingIndex if you want to show “selected” state; otherwise clear it:
-    // setPendingIndex(null);
   }, [pendingIndex]);
 
   // Allow Esc to close modal; Enter to confirm
@@ -101,13 +111,18 @@ export default function Slider() {
           <div
             key={i}
             className="item"
-            data-index={i}                                   // <— lets us know which is front
+            data-index={i}
             style={{ backgroundImage: `url(${s.img})` }}
           >
             <div className="content">
               <div className="name">{s.name}</div>
               <div className="des">{s.description}</div>
-              <a className="see-more" href={s.link} target="_blank" rel="noopener noreferrer">
+              <a
+                className="see-more"
+                href={s.link}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 See More
               </a>
             </div>
@@ -117,14 +132,29 @@ export default function Slider() {
 
       {/* Order: prev • select-gift • next */}
       <div className="ui-dock">
-        <button className="nav prev" aria-label="Previous" onClick={handlePrev}></button>
-        <button className="select-gift" onClick={handleOpenConfirm}>Select this one!</button>
-        <button className="nav next" aria-label="Next" onClick={handleNext}></button>
+        <button
+          className="nav prev"
+          aria-label="Previous"
+          onClick={handlePrev}
+        ></button>
+        <button className="select-gift" onClick={handleOpenConfirm}>
+          Select this one!
+        </button>
+        <button
+          className="nav next"
+          aria-label="Next"
+          onClick={handleNext}
+        ></button>
       </div>
 
       {/* Confirmation Modal */}
       {isConfirmOpen && (
-        <div className="confirm-overlay" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
+        <div
+          className="confirm-overlay"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="confirm-title"
+        >
           <div className="confirm-card">
             <h2 id="confirm-title">Confirm selection</h2>
             <p>
@@ -133,11 +163,19 @@ export default function Slider() {
                 : "Choose this restaurant as your gift card?"}
             </p>
             <div className="confirm-actions">
-              <button className="btn cancel" onClick={handleCancel} autoFocus>Cancel</button>
-              <button className="btn confirm" onClick={handleConfirm}>Confirm</button>
+              <button className="btn cancel" onClick={handleCancel} autoFocus>
+                Cancel
+              </button>
+              <button className="btn confirm" onClick={handleConfirm}>
+                Confirm
+              </button>
             </div>
           </div>
-          <button className="confirm-backdrop" onClick={handleCancel} aria-label="Close"></button>
+          <button
+            className="confirm-backdrop"
+            onClick={handleCancel}
+            aria-label="Close"
+          ></button>
         </div>
       )}
     </div>

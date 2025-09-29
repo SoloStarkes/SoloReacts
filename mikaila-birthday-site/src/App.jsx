@@ -7,9 +7,9 @@ import "./overlay.css"; // ⬅️ new stylesheet below
 
 const App = () => {
   const heroData = [
-    { text1: "Dive into", text2: "what you love" },
-    { text1: "Indulge", text2: "your passions" },
-    { text1: "Give into", text2: "your passions" },
+    { text1: "The world", text2: "is yours" },
+    { text1: "Keep shining,", text2: "keep growing" },
+    { text1: "Your best", text2: "years await" },
   ];
 
   const [heroCount, setHeroCount] = useState(0);

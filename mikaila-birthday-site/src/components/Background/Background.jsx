@@ -1,14 +1,14 @@
 import './Background.css'
-import video1 from '../../Assets/video1.mp4'
-import image1 from '../../Assets/image1.png'
-import image2 from '../../Assets/image2.png'
-import image3 from '../../Assets/image3.png'
+import video1 from '../../Assets/Mikaila_video.mov'
+import image1 from '../../Assets/Mikaila_lamb.jpeg'
+import image2 from '../../Assets/Mikaila_horse.jpeg'
+import image3 from '../../Assets/Mikaila_giant.jpeg'
 
 const Background = ({playStatus,heroCount}) => {
 
     if (playStatus) {
         return (
-            <video className='background fade-in' autoPlay loop muted>
+            <video className='background fade-in' autoPlay loop>
                 <source src={video1} type='video/mp4' />
             </video>
         )

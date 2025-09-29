@@ -11,10 +11,6 @@ const Hero = ({heroData,setHeroCount,heroCount,setPlayStatus,playStatus}) => {
             <p>{heroData.text1}</p>
             <p>{heroData.text2}</p>
         </div>
-        <div className="hero-explore">
-            <p>Explore the featues</p>
-            <img src={arrow_btn} alt="" />
-        </div>
         <div className="hero-dot-play">
             <ul className="hero-dots">
                 <li onClick={()=>setHeroCount(0)} className={heroCount===0?"hero-dot orange":"hero-dot"}></li>

@@ -1,0 +1,105 @@
+/* Simple, reusable modal (kept distinct from your existing overlay.css) */
+
+.confirm-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;           /* stays above the app */
+  display: grid;
+  place-items: center;
+  pointer-events: none;     /* children opt-in */
+}
+
+/* Backdrop sits behind the card but above the page */
+.confirm-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 1;               /* BELOW the card */
+  background: rgba(0, 0, 0, 0.45);
+  border: 0;
+  padding: 0;
+  margin: 0;
+  cursor: default;
+  pointer-events: auto;      /* clickable to close */
+}
+
+/* Card */
+.confirm-card {
+  position: relative;
+  z-index: 2;               /* ABOVE the backdrop */
+  width: min(520px, 92vw);
+  background: #fff;
+  border-radius: 16px;
+  padding: 20px 20px 16px;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.35);
+  pointer-events: auto;      /* accept clicks */
+  animation: confirm-pop 140ms ease-out;
+}
+
+.confirm-card h2 {
+  margin: 0 0 8px;
+  font-size: 22px;
+  line-height: 1.2;
+  color: #111;
+}
+
+.confirm-card p {
+  margin: 0 0 16px;
+  color: #333;
+  line-height: 1.45;
+}
+
+/* Actions */
+.confirm-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.btn {
+  padding: 10px 18px;
+  border-radius: 12px;
+  border: 2px solid #222;
+  background: #444;
+  color: #eee;
+  font-size: 15px;
+  cursor: pointer;
+  transition: transform 0.18s ease, opacity 0.18s ease,
+              background 0.18s ease, border-color 0.18s ease,
+              color 0.18s ease;
+  opacity: 0.98;
+}
+
+.btn:hover {
+  transform: translateY(-2%) scale(1.02);
+  background: #666;
+  border-color: #111;
+  color: #fff;
+  opacity: 1;
+}
+
+.btn.cancel {
+  background: #fafafa;
+  color: #111;
+  border-color: #bbb;
+}
+.btn.cancel:hover {
+  background: #fff;
+  border-color: #999;
+}
+
+/* Slight emphasis on confirm */
+.btn.confirm {
+  background: #2e7d32;   /* green */
+  border-color: #1b5e20;
+  color: #fff;
+}
+.btn.confirm:hover {
+  background: #3c8f40;
+  border-color: #275b28;
+}
+
+/* Pop animation */
+@keyframes confirm-pop {
+  from { transform: translateY(6px) scale(0.98); opacity: 0; }
+  to   { transform: translateY(0)    scale(1);    opacity: 1; }
+}

@@ -3,13 +3,7 @@ import './Navbar.css'
 const Narbar = () => {
   return (
     <div className='nav'>
-        <div className="nav-logo">mikaila-birthday-site</div>
-        <ul className="nav-menu">
-            <li>Home</li>
-            <li>Explore</li>
-            <li>About</li>
-            <li className='nav-contact'>Contact</li>
-        </ul>
+        <div className="nav-logo">Happy 21st Birthday Mikaila!!!</div>
     </div>
   )
 }

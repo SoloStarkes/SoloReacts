@@ -1,8 +1,8 @@
 import './Background.css'
-import video1 from '../../Assets/Mikaila_video.mov'
-import image1 from '../../Assets/Mikaila_lamb.jpeg'
-import image2 from '../../Assets/Mikaila_horse.jpeg'
-import image3 from '../../Assets/Mikaila_giant.jpeg'
+import video1 from '../../assets/Mikaila_video.mov'
+import image1 from '../../assets/Mikaila_lamb.jpeg'
+import image2 from '../../assets/Mikaila_horse.jpeg'
+import image3 from '../../assets/Mikaila_giant.jpeg'
 
 const Background = ({playStatus,heroCount}) => {
 
